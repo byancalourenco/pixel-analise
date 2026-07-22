@@ -1,13 +1,20 @@
+# continuidade dos pixels
+
+# importando o numpy (faz contas em matrizes)
 import numpy as np
 
-
-
+# criando uma função que compara com o pixel do lado 
 def horizontal_difference(gray):
 
-    """
-    Compara cada pixel com o pixel da direita
-    """
 
+    # Compara cada pixel com o pixel da direita
+
+    # esquerda para direita 
+
+    # : --> pegue tudo
+    # linhas, colunas 
+    # gray[:,1:] ---> todas as linhas, a partir da coluna 1
+    # gray[:,:-1] ---> todas as linhas, ate a ultima coluna
     diff = np.abs(
         gray[:,1:].astype(float)
         -
@@ -17,12 +24,12 @@ def horizontal_difference(gray):
     return diff
 
 
-
+# mesma logica, so que agora cima para baixo 
 def vertical_difference(gray):
 
-    """
-    Compara cada pixel com o pixel abaixo
-    """
+
+    # Compara cada pixel com o pixel abaixo
+
 
     diff = np.abs(
         gray[1:,:].astype(float)
@@ -36,9 +43,9 @@ def vertical_difference(gray):
 
 def diagonal_difference(gray):
 
-    """
-    Compara pixels diagonais
-    """
+
+    # Compara pixels diagonais
+
 
     diff = np.abs(
         gray[1:,1:].astype(float)
@@ -49,7 +56,7 @@ def diagonal_difference(gray):
     return diff
 
 
-
+# junta todas as analises
 def create_continuity_map(gray):
 
     horizontal = horizontal_difference(gray)
@@ -78,13 +85,16 @@ def create_continuity_map(gray):
 
 def calculate_continuity_score(map):
 
-    """
-    Retorna percentual de descontinuidade
-    """
+   # retorna percentual de descontinuidade
 
+    # qual é a diferença média dos pixels dessa imagem
     mean_value = np.mean(map)
 
+    # exemplo
+    # mean_value = 25.5
+    # 25.5 / 255 = 0.1
 
+    # 10% da diferença máxima possível
     score = (
         mean_value / 255
     ) * 100

@@ -1,3 +1,4 @@
+# importa as funções que vai precisar
 from .block_heatmap import create_block_heatmap
 from .neighbor_analysis import analyze_neighbor_difference
 
@@ -19,29 +20,40 @@ from .pixel_score import (
     classify_score
 )
 
+# importando bibliotecas
 import cv2
 import os
 
-
+# função principal que recebe o caminho da imagem e executa toda a análise
 def analyze_continuity(image_path):
 
+    # abre a imagem usando a função criada no utils.py
     image = load_image(image_path)
 
+    # transforma a imagem colorida em uma imagem de intensidade de pixels
     gray = convert_gray(image)
+
+    # divide a imagem em blocos e calcula o nível de diferença dentro de cada bloco
     blocks, block_scores = analyze_blocks(gray)
+
+    # mapa
     heatmap_path = create_block_heatmap(
         image_path,
         blocks
     )
+
+    # vizinhos
     neighbor_scores = analyze_neighbor_difference(
         gray
     )
+
+    # pixel score
     pixel_score = calculate_pixel_fraud_score(
         block_scores,
         neighbor_scores
     )
 
-
+    # classificacao
     classification = classify_score(
         pixel_score
     )
@@ -55,14 +67,14 @@ def analyze_continuity(image_path):
         continuity_map
     )
 
-
+    # criando pasta de resultados
     os.makedirs(
         "results",
         exist_ok=True
     )
 
 
-    # normaliza para salvar
+    # converte os valores do mapa para uma escala de imagem
     normalized = cv2.normalize(
         continuity_map,
         None,
@@ -88,7 +100,7 @@ def analyze_continuity(image_path):
         cv2.COLORMAP_JET
     )
 
-
+    # salva mapa colorido
     cv2.imwrite(
         "results/continuity_heatmap.png",
         heatmap
@@ -111,7 +123,7 @@ def analyze_continuity(image_path):
         "pixel_classification":
         classification,
 
-
+        # ordena os blocos do maior score para o menor e pega os 10 mais suspeitos
         "suspicious_blocks":
         sorted(
             blocks,
